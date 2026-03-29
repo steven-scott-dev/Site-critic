@@ -41,6 +41,32 @@ function extractMeta(html, url) {
   };
 }
 
+function extractTextFromResponsePayload(json) {
+  if (typeof json?.output_text === "string" && json.output_text.trim()) {
+    return json.output_text.trim();
+  }
+
+  if (Array.isArray(json?.output)) {
+    const chunks = [];
+
+    for (const item of json.output) {
+      if (!Array.isArray(item?.content)) continue;
+
+      for (const content of item.content) {
+        if (typeof content?.text === "string" && content.text.trim()) {
+          chunks.push(content.text.trim());
+        }
+      }
+    }
+
+    if (chunks.length) {
+      return chunks.join("\n");
+    }
+  }
+
+  return "";
+}
+
 async function getScreenshotAndHtml(url) {
   chromium.setGraphicsMode = false;
 
@@ -227,12 +253,19 @@ async function runVisionAudit({
     throw new Error(json?.error?.message || "OpenAI audit request failed.");
   }
 
-  const raw = json.output_text;
-  if (!raw) {
-    throw new Error("OpenAI returned no output_text.");
+  const rawText = extractTextFromResponsePayload(json);
+
+  if (!rawText) {
+    console.error("OPENAI RAW RESPONSE:", JSON.stringify(json, null, 2));
+    throw new Error("OpenAI returned no readable structured response.");
   }
 
-  return JSON.parse(raw);
+  try {
+    return JSON.parse(rawText);
+  } catch (err) {
+    console.error("FAILED TO PARSE JSON:", rawText);
+    throw new Error("OpenAI returned text, but it was not valid JSON.");
+  }
 }
 
 export default async function handler(req, res) {
@@ -287,4 +320,4 @@ export default async function handler(req, res) {
       error: error.message || "Unknown server error during audit."
     });
   }
-    }
+  }
