@@ -7,7 +7,7 @@
     "dev": "vercel dev"
   },
   "dependencies": {
-    "@sparticuz/chromium-min": "^135.0.0",
+    "@sparticuz/chromium-min": "^143.0.4",
     "puppeteer-core": "^24.8.0"
   }
 }
