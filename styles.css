@@ -363,3 +363,26 @@ li {
   text-align: center;
   font-size: 0.95rem;
 }
+.trust-panel {
+  border: 1px solid rgba(134, 239, 172, 0.2);
+  background: rgba(134, 239, 172, 0.05);
+}
+
+.trust-list {
+  margin: 10px 0 14px;
+  padding-left: 18px;
+}
+
+.trust-list li {
+  margin-bottom: 8px;
+  color: #dfe7f8;
+}
+
+.trust-note {
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #0d1522;
+  font-size: 0.95rem;
+  color: var(--muted);
+  }
