@@ -398,3 +398,29 @@ li {
 .proof-item img:hover {
   opacity: 0.9;
 }
+.cta-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.primary {
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+.secondary-cta {
+  display: flex;
+  gap: 10px;
+}
+
+.secondary-cta a {
+  flex: 1;
+  text-align: center;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  text-decoration: none;
+  color: var(--text);
+  background: #0d1522;
+}
