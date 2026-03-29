@@ -356,3 +356,10 @@ li {
   color: var(--accent-2);
   font-size: 1.4rem;
 }
+.urgency-text {
+  margin: 10px 0 14px;
+  color: #fca5a5;
+  font-weight: 700;
+  text-align: center;
+  font-size: 0.95rem;
+}
