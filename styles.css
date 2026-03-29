@@ -330,3 +330,29 @@ li {
   padding: 14px 16px;
   border-radius: 12px;
 }
+
+.offer-list {
+  margin: 12px 0 16px;
+  padding-left: 18px;
+}
+
+.offer-list li {
+  margin-bottom: 8px;
+  color: #dfe7f8;
+}
+
+.offer-price {
+  margin: 16px 0;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #0d1522;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.offer-price strong {
+  color: var(--accent-2);
+  font-size: 1.4rem;
+}
