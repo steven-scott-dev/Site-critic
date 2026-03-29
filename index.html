@@ -1,41 +1,210 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Website Critic</title>
+  <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
-  <h1>Website Critic</h1>
+  <div class="wrap">
+    <div class="hero">
+      <h1>Website Critic</h1>
+      <p>
+        Paste a business website and get a visual conversion audit based on a live homepage screenshot plus extracted page text.
+      </p>
+    </div>
 
-  <form id="form">
-    <input id="url" type="text" placeholder="Enter website URL" required />
-    <button type="submit">Analyze</button>
-  </form>
+    <div class="card">
+      <form id="criticForm" class="form-grid">
+        <div class="row">
+          <div>
+            <label for="url">Website URL</label>
+            <input id="url" type="url" placeholder="https://example.com" required />
+          </div>
+          <div>
+            <label for="businessType">Business Type</label>
+            <input id="businessType" type="text" placeholder="Spa, roofer, landscaping..." />
+          </div>
+          <div>
+            <label for="goal">Main Goal</label>
+            <input id="goal" type="text" placeholder="More calls, leads, bookings..." />
+          </div>
+        </div>
 
-  <pre id="output"></pre>
+        <div>
+          <label for="extraContext">Extra context</label>
+          <textarea id="extraContext" placeholder="Example: weak trust, low bookings, cluttered page, no clear offer..."></textarea>
+        </div>
+
+        <button id="submitBtn" type="submit">Run Visual Audit</button>
+      </form>
+
+      <div id="status" class="status"></div>
+
+      <div id="results" class="results">
+        <div class="top-grid">
+          <div class="panel">
+            <h2>Homepage Screenshot</h2>
+            <div class="preview-box">
+              <img id="previewImage" alt="Website screenshot preview" />
+            </div>
+          </div>
+
+          <div class="panel">
+            <h2>Overall Verdict</h2>
+            <div class="score-pill">
+              <span>Conversion Score</span>
+              <strong id="score">--/10</strong>
+            </div>
+            <p id="summary" class="summary"></p>
+
+            <div class="kpis">
+              <div class="kpi">
+                <span>Clarity</span>
+                <strong id="clarity">--</strong>
+              </div>
+              <div class="kpi">
+                <span>Trust</span>
+                <strong id="trust">--</strong>
+              </div>
+              <div class="kpi">
+                <span>CTA</span>
+                <strong id="cta">--</strong>
+              </div>
+              <div class="kpi">
+                <span>Offer</span>
+                <strong id="offer">--</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="panel">
+            <h3>What’s Hurting Conversions</h3>
+            <ul id="issues"></ul>
+          </div>
+
+          <div class="panel">
+            <h3>Best Fixes First</h3>
+            <ul id="fixes"></ul>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="panel">
+            <h3>Above-the-Fold Notes</h3>
+            <ul id="aboveFold"></ul>
+          </div>
+
+          <div class="panel">
+            <h3>Trust & Friction Notes</h3>
+            <ul id="trustNotes"></ul>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="panel">
+            <h3>Rewrite Ideas</h3>
+            <ul id="rewrites"></ul>
+          </div>
+
+          <div class="panel">
+            <h3>Fast Wins</h3>
+            <ul id="quickWins"></ul>
+          </div>
+        </div>
+      </div>
+
+      <p class="footer-note">
+        This analyzes the homepage only. Some JavaScript-heavy sites or bot-protected sites may fail or return thin data.
+      </p>
+    </div>
+  </div>
 
   <script>
-    const form = document.getElementById("form");
-    const output = document.getElementById("output");
+    const form = document.getElementById("criticForm");
+    const submitBtn = document.getElementById("submitBtn");
+    const statusEl = document.getElementById("status");
+    const resultsEl = document.getElementById("results");
+
+    const previewImage = document.getElementById("previewImage");
+    const scoreEl = document.getElementById("score");
+    const summaryEl = document.getElementById("summary");
+    const clarityEl = document.getElementById("clarity");
+    const trustEl = document.getElementById("trust");
+    const ctaEl = document.getElementById("cta");
+    const offerEl = document.getElementById("offer");
+
+    const issuesEl = document.getElementById("issues");
+    const fixesEl = document.getElementById("fixes");
+    const aboveFoldEl = document.getElementById("aboveFold");
+    const trustNotesEl = document.getElementById("trustNotes");
+    const rewritesEl = document.getElementById("rewrites");
+    const quickWinsEl = document.getElementById("quickWins");
+
+    function fillList(el, items) {
+      el.innerHTML = "";
+      (items || []).forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = item;
+        el.appendChild(li);
+      });
+    }
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const url = document.getElementById("url").value;
 
-      output.textContent = "Analyzing...";
+      const payload = {
+        url: document.getElementById("url").value.trim(),
+        businessType: document.getElementById("businessType").value.trim(),
+        goal: document.getElementById("goal").value.trim(),
+        extraContext: document.getElementById("extraContext").value.trim()
+      };
 
-      const res = await fetch("/api/critique", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ url })
-      });
+      submitBtn.disabled = true;
+      resultsEl.classList.remove("show");
+      statusEl.className = "status";
+      statusEl.textContent = "Capturing screenshot and running audit...";
 
-      const data = await res.json();
-      output.textContent = JSON.stringify(data, null, 2);
+      try {
+        const res = await fetch("/api/critique", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || "Audit failed.");
+        }
+
+        previewImage.src = data.screenshotDataUrl;
+        scoreEl.textContent = `${data.audit.score}/10`;
+        summaryEl.textContent = data.audit.summary;
+
+        clarityEl.textContent = data.audit.subscores.clarity;
+        trustEl.textContent = data.audit.subscores.trust;
+        ctaEl.textContent = data.audit.subscores.cta;
+        offerEl.textContent = data.audit.subscores.offer;
+
+        fillList(issuesEl, data.audit.issues);
+        fillList(fixesEl, data.audit.fixes);
+        fillList(aboveFoldEl, data.audit.aboveTheFold);
+        fillList(trustNotesEl, data.audit.trustAndFriction);
+        fillList(rewritesEl, data.audit.rewrites);
+        fillList(quickWinsEl, data.audit.quickWins);
+
+        resultsEl.classList.add("show");
+        statusEl.textContent = "Audit complete.";
+      } catch (err) {
+        statusEl.className = "status error";
+        statusEl.textContent = err.message || "Something broke.";
+      } finally {
+        submitBtn.disabled = false;
+      }
     });
   </script>
 </body>
