@@ -318,3 +318,15 @@ li {
   font-size: 0.95rem;
   line-height: 1.5;
 }
+
+.fix-site-btn {
+  display: inline-block;
+  text-decoration: none;
+  text-align: center;
+  border: 0;
+  background: linear-gradient(90deg, var(--accent), #7dd3fc);
+  color: #071018;
+  font-weight: 800;
+  padding: 14px 16px;
+  border-radius: 12px;
+}
