@@ -71,17 +71,44 @@
           <h3>Get the Full Audit</h3>
           <p>Enter your email and I’ll send your full audit + fixes</p>
 
-          <form id="leadForm" class="lead-form">
-            <div class="lead-grid">
-              <div>
-                <label for="leadEmail">Email</label>
-                <input id="leadEmail" type="email" placeholder="you@example.com" required />
-              </div>
-              <div>
-                <label for="leadPhone">Phone (optional)</label>
-                <input id="leadPhone" type="tel" placeholder="(555) 555-5555" />
-              </div>
-            </div>
+          <<form id="criticForm" class="form-grid">
+  <div class="row">
+    <div>
+      <label for="name">Name</label>
+      <input id="name" type="text" placeholder="John Smith" />
+    </div>
+    <div>
+      <label for="email">Email</label>
+      <input id="email" type="email" placeholder="john@example.com" />
+    </div>
+    <div>
+      <label for="phone">Phone</label>
+      <input id="phone" type="tel" placeholder="(555) 555-5555" />
+    </div>
+  </div>
+
+  <div class="row">
+    <div>
+      <label for="url">Website URL</label>
+      <input id="url" type="url" placeholder="https://example.com" required />
+    </div>
+    <div>
+      <label for="businessType">Business Type</label>
+      <input id="businessType" type="text" placeholder="Spa, roofer, landscaping..." />
+    </div>
+    <div>
+      <label for="goal">Main Goal</label>
+      <input id="goal" type="text" placeholder="More calls, leads, bookings..." />
+    </div>
+  </div>
+
+  <div>
+    <label for="extraContext">Extra context</label>
+    <textarea id="extraContext" placeholder="Example: weak trust, low bookings, cluttered page, no clear offer..."></textarea>
+  </div>
+
+  <button id="submitBtn" type="submit">Save Lead + Run Visual Audit</button>
+          </form>
 
             <button type="submit">Unlock Full Audit</button>
           </form>
@@ -227,63 +254,82 @@
     </div>
   </div>
 
-  <script>
-    const form = document.getElementById("criticForm");
-    const submitBtn = document.getElementById("submitBtn");
-    const statusEl = document.getElementById("status");
-    const resultsEl = document.getElementById("results");
+      <script>
+  const form = document.getElementById("criticForm");
+  const submitBtn = document.getElementById("submitBtn");
+  const statusEl = document.getElementById("status");
+  const resultsEl = document.getElementById("results");
 
-    const previewImage = document.getElementById("previewImage");
+  const previewImage = document.getElementById("previewImage");
+  const scoreEl = document.getElementById("score");
+  const summaryEl = document.getElementById("summary");
+  const clarityEl = document.getElementById("clarity");
+  const trustEl = document.getElementById("trust");
+  const ctaEl = document.getElementById("cta");
+  const offerEl = document.getElementById("offer");
 
-    const teaserScoreEl = document.getElementById("teaserScore");
-    const oneIssueEl = document.getElementById("oneIssue");
-    const showFixesBtn = document.getElementById("showFixesBtn");
+  const issuesEl = document.getElementById("issues");
+  const fixesEl = document.getElementById("fixes");
+  const aboveFoldEl = document.getElementById("aboveFold");
+  const trustNotesEl = document.getElementById("trustNotes");
+  const rewritesEl = document.getElementById("rewrites");
+  const quickWinsEl = document.getElementById("quickWins");
 
-    const leadCaptureEl = document.getElementById("leadCapture");
-    const leadForm = document.getElementById("leadForm");
-    const fullAuditEl = document.getElementById("fullAudit");
+  function fillList(el, items) {
+    el.innerHTML = "";
+    (items || []).forEach(item => {
+      const li = document.createElement("li");
+      li.textContent = item;
+      el.appendChild(li);
+    });
+  }
 
-    const scoreEl = document.getElementById("score");
-    const summaryEl = document.getElementById("summary");
-    const clarityEl = document.getElementById("clarity");
-    const trustEl = document.getElementById("trust");
-    const ctaEl = document.getElementById("cta");
-    const offerEl = document.getElementById("offer");
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-    const issuesEl = document.getElementById("issues");
-    const fixesEl = document.getElementById("fixes");
-    const aboveFoldEl = document.getElementById("aboveFold");
-    const trustNotesEl = document.getElementById("trustNotes");
-    const rewritesEl = document.getElementById("rewrites");
-    const quickWinsEl = document.getElementById("quickWins");
+    const payload = {
+      name: document.getElementById("name").value.trim(),
+      email: document.getElementById("email").value.trim(),
+      phone: document.getElementById("phone").value.trim(),
+      url: document.getElementById("url").value.trim(),
+      businessType: document.getElementById("businessType").value.trim(),
+      goal: document.getElementById("goal").value.trim(),
+      extraContext: document.getElementById("extraContext").value.trim()
+    };
 
-    let latestAuditResponse = null;
-    let latestPayload = null;
+    submitBtn.disabled = true;
+    resultsEl.classList.remove("show");
+    statusEl.className = "status";
+    statusEl.textContent = "Saving lead...";
 
-    function fillList(el, items) {
-      el.innerHTML = "";
-      (items || []).forEach(item => {
-        const li = document.createElement("li");
-        li.textContent = item;
-        el.appendChild(li);
+    try {
+      const leadRes = await fetch("/api/log-lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
       });
-    }
 
-    function resetFunnelUi() {
-      leadCaptureEl.classList.add("hidden-block");
-      fullAuditEl.classList.add("hidden-block");
-      teaserScoreEl.textContent = "--/10";
-      oneIssueEl.textContent = "No issue yet.";
-    }
+      const leadData = await leadRes.json();
 
-    function renderTeaser(data) {
+      if (!leadRes.ok) {
+        throw new Error(leadData.error || "Lead save failed.");
+      }
+
+      statusEl.textContent = `Lead saved (${leadData.leadId}). Running audit...`;
+
+      const res = await fetch("/api/critique", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Audit failed.");
+      }
+
       previewImage.src = data.screenshotDataUrl;
-      teaserScoreEl.textContent = `${data.audit.score}/10`;
-      oneIssueEl.textContent = (data.audit.issues && data.audit.issues[0]) || "No major issue found.";
-      resultsEl.classList.add("show");
-    }
-
-    function renderFullAudit(data) {
       scoreEl.textContent = `${data.audit.score}/10`;
       summaryEl.textContent = data.audit.summary;
 
@@ -298,87 +344,16 @@
       fillList(trustNotesEl, data.audit.trustAndFriction);
       fillList(rewritesEl, data.audit.rewrites);
       fillList(quickWinsEl, data.audit.quickWins);
+
+      resultsEl.classList.add("show");
+      statusEl.textContent = "Lead saved and audit complete.";
+    } catch (err) {
+      statusEl.className = "status error";
+      statusEl.textContent = err.message || "Something broke.";
+    } finally {
+      submitBtn.disabled = false;
     }
-
-    function saveLead(lead) {
-      const existing = JSON.parse(localStorage.getItem("websiteCriticLeads") || "[]");
-      existing.push(lead);
-      localStorage.setItem("websiteCriticLeads", JSON.stringify(existing));
-      console.log("New lead captured:", lead);
-    }
-
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      latestPayload = {
-        url: document.getElementById("url").value.trim(),
-        businessType: document.getElementById("businessType").value.trim(),
-        goal: document.getElementById("goal").value.trim(),
-        extraContext: document.getElementById("extraContext").value.trim()
-      };
-
-      latestAuditResponse = null;
-      submitBtn.disabled = true;
-      resultsEl.classList.remove("show");
-      resetFunnelUi();
-      statusEl.className = "status";
-      statusEl.textContent = "Capturing screenshot and running audit...";
-
-      try {
-        const res = await fetch("/api/critique", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(latestPayload)
-        });
-
-        const data = await res.json();
-
-        if (!res.ok) {
-          throw new Error(data.error || "Audit failed.");
-        }
-
-        latestAuditResponse = data;
-        renderTeaser(data);
-        statusEl.textContent = "Audit ready. Unlock the fixes below.";
-      } catch (err) {
-        statusEl.className = "status error";
-        statusEl.textContent = err.message || "Something broke.";
-      } finally {
-        submitBtn.disabled = false;
-      }
-    });
-
-    showFixesBtn.addEventListener("click", () => {
-      if (!latestAuditResponse) return;
-      leadCaptureEl.classList.remove("hidden-block");
-      leadCaptureEl.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
-
-    leadForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      if (!latestAuditResponse) return;
-
-      const email = document.getElementById("leadEmail").value.trim();
-      const phone = document.getElementById("leadPhone").value.trim();
-
-      if (!email) return;
-
-      saveLead({
-        email,
-        phone,
-        website: latestPayload?.url || "",
-        businessType: latestPayload?.businessType || "",
-        goal: latestPayload?.goal || "",
-        createdAt: new Date().toISOString()
-      });
-
-      renderFullAudit(latestAuditResponse);
-      fullAuditEl.classList.remove("hidden-block");
-      leadCaptureEl.classList.add("hidden-block");
-      statusEl.textContent = "Full audit unlocked.";
-      fullAuditEl.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
-  </script>
+  });
+      </script>
 </body>
                   </html>
