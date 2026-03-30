@@ -130,7 +130,7 @@
           <div class="lock-card">
             <h3>Unlock the Full Review</h3>
             <p class="mini-note">Get the full breakdown, fixes, trust notes, rewrite ideas, and fast wins.</p>
-           <div id="leadForm" class="form-grid">
+            <div id="leadForm" class="form-grid">
               <div class="row">
                 <div>
                   <label for="name">Name</label>
@@ -145,8 +145,8 @@
                   <input id="phone" type="tel" placeholder="(555) 555-5555" />
                 </div>
               </div>
-             <button id="unlockBtn" type="button">Unlock Full Audit</button>
-            </form>
+              <button id="unlockBtn" type="button">Unlock Full Audit</button>
+            </div>
           </div>
         </div>
       </div>
@@ -224,58 +224,176 @@
   </div>
 
   <script>
-   unlockBtn.addEventListener("click", async () => {
-  if (!cachedPayload || !cachedAudit) {
-    statusEl.className = "status error";
-    statusEl.textContent = "Run the free score first.";
-    return;
-  }
+    const auditForm = document.getElementById("auditForm");
+    const auditBtn = document.getElementById("auditBtn");
+    const unlockBtn = document.getElementById("unlockBtn");
+    const statusEl = document.getElementById("status");
 
-  const name = document.getElementById("name").value.trim();
-  const email = document.getElementById("email").value.trim();
-  const phone = document.getElementById("phone").value.trim();
+    const teaserSection = document.getElementById("teaserSection");
+    const lockedPreview = document.getElementById("lockedPreview");
+    const fullResults = document.getElementById("fullResults");
 
-  if (!name || !email) {
-    statusEl.className = "status error";
-    statusEl.textContent = "Name and email are required.";
-    return;
-  }
+    const previewImage = document.getElementById("previewImage");
+    const scoreEl = document.getElementById("score");
+    const summaryEl = document.getElementById("summary");
+    const clarityEl = document.getElementById("clarity");
+    const trustEl = document.getElementById("trust");
+    const ctaEl = document.getElementById("cta");
+    const offerEl = document.getElementById("offer");
+    const topIssueEl = document.getElementById("topIssue");
 
-  unlockBtn.disabled = true;
-  statusEl.className = "status";
-  statusEl.textContent = "Saving your lead and unlocking full audit...";
+    const issuesEl = document.getElementById("issues");
+    const fixesEl = document.getElementById("fixes");
+    const aboveFoldEl = document.getElementById("aboveFold");
+    const trustNotesEl = document.getElementById("trustNotes");
+    const rewritesEl = document.getElementById("rewrites");
+    const quickWinsEl = document.getElementById("quickWins");
 
-  const leadPayload = {
-    ...cachedPayload,
-    name,
-    email,
-    phone,
-    critiqueScore: cachedAudit.score,
-    followUpMessage: ""
-  };
+    let cachedAudit = null;
+    let cachedPayload = null;
 
-  try {
-    const leadRes = await fetch("/api/log-lead-supabase", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(leadPayload)
-    });
-
-    const leadData = await leadRes.json();
-
-    if (!leadRes.ok) {
-      throw new Error(leadData.error || "Lead save failed.");
+    function fillList(el, items) {
+      el.innerHTML = "";
+      (items || []).forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = item;
+        el.appendChild(li);
+      });
     }
 
-    showFullAudit();
-    statusEl.textContent = "Full audit unlocked.";
-  } catch (err) {
-    statusEl.className = "status error";
-    statusEl.textContent = err.message || "Something broke.";
-  } finally {
-    unlockBtn.disabled = false;
-  }
-});
+    function hideAllResults() {
+      teaserSection.classList.add("hidden");
+      teaserSection.classList.remove("show");
+      lockedPreview.classList.add("hidden");
+      lockedPreview.classList.remove("show");
+      fullResults.classList.add("hidden");
+      fullResults.classList.remove("show");
+    }
+
+    function showTeaser(data) {
+      cachedAudit = data.audit;
+
+      previewImage.src = data.screenshotDataUrl;
+      scoreEl.textContent = `${data.audit.score}/10`;
+      summaryEl.textContent = data.audit.summary;
+      clarityEl.textContent = data.audit.subscores.clarity;
+      trustEl.textContent = data.audit.subscores.trust;
+      ctaEl.textContent = data.audit.subscores.cta;
+      offerEl.textContent = data.audit.subscores.offer;
+      fillList(topIssueEl, data.audit.issues?.slice(0, 1) || []);
+
+      teaserSection.classList.remove("hidden");
+      teaserSection.classList.add("show");
+      lockedPreview.classList.remove("hidden");
+      lockedPreview.classList.add("show");
+    }
+
+    function showFullAudit() {
+      if (!cachedAudit) return;
+
+      fillList(issuesEl, cachedAudit.issues || []);
+      fillList(fixesEl, cachedAudit.fixes || []);
+      fillList(aboveFoldEl, cachedAudit.aboveTheFold || []);
+      fillList(trustNotesEl, cachedAudit.trustAndFriction || []);
+      fillList(rewritesEl, cachedAudit.rewrites || []);
+      fillList(quickWinsEl, cachedAudit.quickWins || []);
+
+      lockedPreview.classList.add("hidden");
+      lockedPreview.classList.remove("show");
+      fullResults.classList.remove("hidden");
+      fullResults.classList.add("show");
+    }
+
+    auditForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      cachedPayload = {
+        url: document.getElementById("url").value.trim(),
+        businessType: document.getElementById("businessType").value.trim(),
+        goal: document.getElementById("goal").value.trim(),
+        extraContext: document.getElementById("extraContext").value.trim()
+      };
+
+      auditBtn.disabled = true;
+      hideAllResults();
+      statusEl.className = "status";
+      statusEl.textContent = "Running free website score...";
+
+      try {
+        const res = await fetch("/api/critique", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(cachedPayload)
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || "Audit failed.");
+        }
+
+        showTeaser(data);
+        statusEl.textContent = "Free score ready. Enter your info to unlock the full audit.";
+      } catch (err) {
+        statusEl.className = "status error";
+        statusEl.textContent = err.message || "Something broke.";
+      } finally {
+        auditBtn.disabled = false;
+      }
+    });
+
+    unlockBtn.addEventListener("click", async () => {
+      if (!cachedPayload || !cachedAudit) {
+        statusEl.className = "status error";
+        statusEl.textContent = "Run the free score first.";
+        return;
+      }
+
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+
+      if (!name || !email) {
+        statusEl.className = "status error";
+        statusEl.textContent = "Name and email are required.";
+        return;
+      }
+
+      unlockBtn.disabled = true;
+      statusEl.className = "status";
+      statusEl.textContent = "Saving your lead and unlocking full audit...";
+
+      const leadPayload = {
+        ...cachedPayload,
+        name,
+        email,
+        phone,
+        critiqueScore: cachedAudit.score,
+        followUpMessage: ""
+      };
+
+      try {
+        const leadRes = await fetch("/api/log-lead-supabase", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(leadPayload)
+        });
+
+        const leadData = await leadRes.json();
+
+        if (!leadRes.ok) {
+          throw new Error(leadData.error || "Lead save failed.");
+        }
+
+        showFullAudit();
+        statusEl.textContent = "Full audit unlocked.";
+      } catch (err) {
+        statusEl.className = "status error";
+        statusEl.textContent = err.message || "Something broke.";
+      } finally {
+        unlockBtn.disabled = false;
+      }
+    });
   </script>
 </body>
 </html>
