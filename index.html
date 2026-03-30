@@ -19,6 +19,21 @@
       <form id="criticForm" class="form-grid">
         <div class="row">
           <div>
+            <label for="name">Name</label>
+            <input id="name" type="text" placeholder="John Smith" />
+          </div>
+          <div>
+            <label for="email">Email</label>
+            <input id="email" type="email" placeholder="john@example.com" />
+          </div>
+          <div>
+            <label for="phone">Phone</label>
+            <input id="phone" type="tel" placeholder="(555) 555-5555" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
             <label for="url">Website URL</label>
             <input id="url" type="url" placeholder="https://example.com" required />
           </div>
@@ -37,7 +52,7 @@
           <textarea id="extraContext" placeholder="Example: weak trust, low bookings, cluttered page, no clear offer..."></textarea>
         </div>
 
-        <button id="submitBtn" type="submit">Run Visual Audit</button>
+        <button id="submitBtn" type="submit">Save Lead + Run Visual Audit</button>
       </form>
 
       <div id="status" class="status"></div>
@@ -51,70 +66,6 @@
             </div>
           </div>
 
-          <div class="panel">
-            <h2>Quick Score</h2>
-            <div class="score-pill">
-              <span>Conversion Score</span>
-              <strong id="teaserScore">--/10</strong>
-            </div>
-            <p class="muted-copy">Here’s the biggest thing hurting conversions right now:</p>
-            <div id="oneIssue" class="issue-highlight">No issue yet.</div>
-
-            <div class="teaser-cta">
-              <p>Want the full breakdown + exact fixes to get more bookings?</p>
-              <button id="showFixesBtn" type="button">Show Me Fixes</button>
-            </div>
-          </div>
-        </div>
-
-        <div id="leadCapture" class="panel hidden-block">
-          <h3>Get the Full Audit</h3>
-          <p>Enter your email and I’ll send your full audit + fixes</p>
-
-          <<form id="criticForm" class="form-grid">
-  <div class="row">
-    <div>
-      <label for="name">Name</label>
-      <input id="name" type="text" placeholder="John Smith" />
-    </div>
-    <div>
-      <label for="email">Email</label>
-      <input id="email" type="email" placeholder="john@example.com" />
-    </div>
-    <div>
-      <label for="phone">Phone</label>
-      <input id="phone" type="tel" placeholder="(555) 555-5555" />
-    </div>
-  </div>
-
-  <div class="row">
-    <div>
-      <label for="url">Website URL</label>
-      <input id="url" type="url" placeholder="https://example.com" required />
-    </div>
-    <div>
-      <label for="businessType">Business Type</label>
-      <input id="businessType" type="text" placeholder="Spa, roofer, landscaping..." />
-    </div>
-    <div>
-      <label for="goal">Main Goal</label>
-      <input id="goal" type="text" placeholder="More calls, leads, bookings..." />
-    </div>
-  </div>
-
-  <div>
-    <label for="extraContext">Extra context</label>
-    <textarea id="extraContext" placeholder="Example: weak trust, low bookings, cluttered page, no clear offer..."></textarea>
-  </div>
-
-  <button id="submitBtn" type="submit">Save Lead + Run Visual Audit</button>
-          </form>
-
-            <button type="submit">Unlock Full Audit</button>
-          </form>
-        </div>
-
-        <div id="fullAudit" class="hidden-block">
           <div class="panel">
             <h2>Overall Verdict</h2>
             <div class="score-pill">
@@ -142,108 +93,41 @@
               </div>
             </div>
           </div>
+        </div>
 
-          <div class="grid-2">
-            <div class="panel">
-              <h3>What’s Hurting Conversions</h3>
-              <ul id="issues"></ul>
-            </div>
-
-            <div class="panel">
-              <h3>Best Fixes First</h3>
-              <ul id="fixes"></ul>
-            </div>
+        <div class="grid-2">
+          <div class="panel">
+            <h3>What’s Hurting Conversions</h3>
+            <ul id="issues"></ul>
           </div>
 
-          <div class="grid-2">
-            <div class="panel">
-              <h3>Above-the-Fold Notes</h3>
-              <ul id="aboveFold"></ul>
-            </div>
+          <div class="panel">
+            <h3>Best Fixes First</h3>
+            <ul id="fixes"></ul>
+          </div>
+        </div>
 
-            <div class="panel">
-              <h3>Trust & Friction Notes</h3>
-              <ul id="trustNotes"></ul>
-            </div>
+        <div class="grid-2">
+          <div class="panel">
+            <h3>Above-the-Fold Notes</h3>
+            <ul id="aboveFold"></ul>
           </div>
 
-          <div class="grid-2">
-            <div class="panel">
-              <h3>Rewrite Ideas</h3>
-              <ul id="rewrites"></ul>
-            </div>
+          <div class="panel">
+            <h3>Trust & Friction Notes</h3>
+            <ul id="trustNotes"></ul>
+          </div>
+        </div>
 
-            <div class="panel">
-              <h3>Fast Wins</h3>
-              <ul id="quickWins"></ul>
-            </div>
+        <div class="grid-2">
+          <div class="panel">
+            <h3>Rewrite Ideas</h3>
+            <ul id="rewrites"></ul>
           </div>
 
-          <div class="panel close-panel">
-  <h3>Want Me to Fix This For You?</h3>
-
-  <p>
-    Most local service websites lose calls because of simple conversion issues.
-    I’ll fix your top 3 problems in 48–72 hours so you get more leads without rebuilding your whole site.
-  </p>
-            <div class="panel trust-panel">
-  <h3>Why This Audit Works</h3>
-
-  <ul class="trust-list">
-    <li>✔ Based on real conversion principles used by high-performing sites</li>
-    <li>✔ Focused on getting more calls, leads, and bookings</li>
-    <li>✔ Highlights the exact issues that are likely costing you customers</li>
-    <li>✔ Includes fixes you can actually apply right away</li>
-  </ul>
-
-  <div class="trust-note">
-    <strong>Note:</strong> This audit looks at your actual homepage layout and content —
-    not just surface-level checks.
-  </div>
-            </div>
-<div class="panel proof-panel">
-  <h3>Real Example Fix</h3>
-
-  <div class="proof-images">
-    <div class="proof-item">
-      <p>Before</p>
-      <img src="/before.jpg" alt="Before website" />
-    </div>
-
-    <div class="proof-item">
-      <p>After</p>
-      <img src="/after.jpg" alt="After website" />
-    </div>
-  </div>
-
-  <p class="proof-note">
-    Small changes like this can significantly increase calls and bookings.
-  </p>
-</div>
-            
-
-  <ul class="offer-list">
-    <li>✔ Fix your biggest conversion blockers</li>
-    <li>✔ Improve headline + call-to-action</li>
-    <li>✔ Add trust elements that increase bookings</li>
-    <li>✔ Delivered in 48–72 hours</li>
-  </ul>
-
-  <div class="offer-price">
-    <span>One-time fix:</span>
-    <strong>$99</strong>
-  </div>
-<p class="urgency-text">⚠️ Only taking 3 new sites this week</p>
-  <div class="cta-group">
-  <a class="fix-site-btn primary" href="mailto:your@email.com?subject=Fix My Site Request&body=Hi, I want the $99 conversion fix for my website.">
-    Fix My Site for $99
-  </a>
-
-  <div class="secondary-cta">
-    <a href="tel:+18653094122">Call</a>
-    <a href="sms:+18653094122?body=Hi, I want help fixing my site.">Text</a>
-  </div>
-  </div>
+          <div class="panel">
+            <h3>Fast Wins</h3>
+            <ul id="quickWins"></ul>
           </div>
         </div>
       </div>
@@ -254,106 +138,106 @@
     </div>
   </div>
 
-      <script>
-  const form = document.getElementById("criticForm");
-  const submitBtn = document.getElementById("submitBtn");
-  const statusEl = document.getElementById("status");
-  const resultsEl = document.getElementById("results");
+  <script>
+    const form = document.getElementById("criticForm");
+    const submitBtn = document.getElementById("submitBtn");
+    const statusEl = document.getElementById("status");
+    const resultsEl = document.getElementById("results");
 
-  const previewImage = document.getElementById("previewImage");
-  const scoreEl = document.getElementById("score");
-  const summaryEl = document.getElementById("summary");
-  const clarityEl = document.getElementById("clarity");
-  const trustEl = document.getElementById("trust");
-  const ctaEl = document.getElementById("cta");
-  const offerEl = document.getElementById("offer");
+    const previewImage = document.getElementById("previewImage");
+    const scoreEl = document.getElementById("score");
+    const summaryEl = document.getElementById("summary");
+    const clarityEl = document.getElementById("clarity");
+    const trustEl = document.getElementById("trust");
+    const ctaEl = document.getElementById("cta");
+    const offerEl = document.getElementById("offer");
 
-  const issuesEl = document.getElementById("issues");
-  const fixesEl = document.getElementById("fixes");
-  const aboveFoldEl = document.getElementById("aboveFold");
-  const trustNotesEl = document.getElementById("trustNotes");
-  const rewritesEl = document.getElementById("rewrites");
-  const quickWinsEl = document.getElementById("quickWins");
+    const issuesEl = document.getElementById("issues");
+    const fixesEl = document.getElementById("fixes");
+    const aboveFoldEl = document.getElementById("aboveFold");
+    const trustNotesEl = document.getElementById("trustNotes");
+    const rewritesEl = document.getElementById("rewrites");
+    const quickWinsEl = document.getElementById("quickWins");
 
-  function fillList(el, items) {
-    el.innerHTML = "";
-    (items || []).forEach(item => {
-      const li = document.createElement("li");
-      li.textContent = item;
-      el.appendChild(li);
-    });
-  }
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const payload = {
-      name: document.getElementById("name").value.trim(),
-      email: document.getElementById("email").value.trim(),
-      phone: document.getElementById("phone").value.trim(),
-      url: document.getElementById("url").value.trim(),
-      businessType: document.getElementById("businessType").value.trim(),
-      goal: document.getElementById("goal").value.trim(),
-      extraContext: document.getElementById("extraContext").value.trim()
-    };
-
-    submitBtn.disabled = true;
-    resultsEl.classList.remove("show");
-    statusEl.className = "status";
-    statusEl.textContent = "Saving lead...";
-
-    try {
-      const leadRes = await fetch("/api/log-lead", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+    function fillList(el, items) {
+      el.innerHTML = "";
+      (items || []).forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = item;
+        el.appendChild(li);
       });
-
-      const leadData = await leadRes.json();
-
-      if (!leadRes.ok) {
-        throw new Error(leadData.error || "Lead save failed.");
-      }
-
-      statusEl.textContent = `Lead saved (${leadData.leadId}). Running audit...`;
-
-      const res = await fetch("/api/critique", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || "Audit failed.");
-      }
-
-      previewImage.src = data.screenshotDataUrl;
-      scoreEl.textContent = `${data.audit.score}/10`;
-      summaryEl.textContent = data.audit.summary;
-
-      clarityEl.textContent = data.audit.subscores.clarity;
-      trustEl.textContent = data.audit.subscores.trust;
-      ctaEl.textContent = data.audit.subscores.cta;
-      offerEl.textContent = data.audit.subscores.offer;
-
-      fillList(issuesEl, data.audit.issues);
-      fillList(fixesEl, data.audit.fixes);
-      fillList(aboveFoldEl, data.audit.aboveTheFold);
-      fillList(trustNotesEl, data.audit.trustAndFriction);
-      fillList(rewritesEl, data.audit.rewrites);
-      fillList(quickWinsEl, data.audit.quickWins);
-
-      resultsEl.classList.add("show");
-      statusEl.textContent = "Lead saved and audit complete.";
-    } catch (err) {
-      statusEl.className = "status error";
-      statusEl.textContent = err.message || "Something broke.";
-    } finally {
-      submitBtn.disabled = false;
     }
-  });
-      </script>
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const payload = {
+        name: document.getElementById("name").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        phone: document.getElementById("phone").value.trim(),
+        url: document.getElementById("url").value.trim(),
+        businessType: document.getElementById("businessType").value.trim(),
+        goal: document.getElementById("goal").value.trim(),
+        extraContext: document.getElementById("extraContext").value.trim()
+      };
+
+      submitBtn.disabled = true;
+      resultsEl.classList.remove("show");
+      statusEl.className = "status";
+      statusEl.textContent = "Saving lead...";
+
+      try {
+        const leadRes = await fetch("/api/log-lead-supabase", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        const leadData = await leadRes.json();
+
+        if (!leadRes.ok) {
+          throw new Error(leadData.error || "Lead save failed.");
+        }
+
+        statusEl.textContent = `Lead saved. Running audit...`;
+
+        const res = await fetch("/api/critique", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || "Audit failed.");
+        }
+
+        previewImage.src = data.screenshotDataUrl;
+        scoreEl.textContent = `${data.audit.score}/10`;
+        summaryEl.textContent = data.audit.summary;
+
+        clarityEl.textContent = data.audit.subscores.clarity;
+        trustEl.textContent = data.audit.subscores.trust;
+        ctaEl.textContent = data.audit.subscores.cta;
+        offerEl.textContent = data.audit.subscores.offer;
+
+        fillList(issuesEl, data.audit.issues);
+        fillList(fixesEl, data.audit.fixes);
+        fillList(aboveFoldEl, data.audit.aboveTheFold);
+        fillList(trustNotesEl, data.audit.trustAndFriction);
+        fillList(rewritesEl, data.audit.rewrites);
+        fillList(quickWinsEl, data.audit.quickWins);
+
+        resultsEl.classList.add("show");
+        statusEl.textContent = `Lead saved and audit complete.`;
+      } catch (err) {
+        statusEl.className = "status error";
+        statusEl.textContent = err.message || "Something broke.";
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+  </script>
 </body>
-                  </html>
+</html>
